@@ -16,7 +16,7 @@ function App() {
     try {
 
       const apiRes = await axios.get(
-        "http://localhost:5000/get-all-products"
+        "http://localhost:5000/get-products"
       );
 
       setAllProducts(apiRes.data.products);
@@ -24,7 +24,7 @@ function App() {
     } catch (error) {
 
       console.log("Error", error);
-      setError("Products load nahi ho rahe");
+      setError("Products Load Nahi Ho Rahe");
 
     }
 
@@ -32,9 +32,7 @@ function App() {
 
 
   useEffect(() => {
-
     getAllProducts();
-
   }, []);
 
 
@@ -54,8 +52,6 @@ function App() {
       setSuccess("");
 
 
-      // EMPTY FIELD CHECK
-
       if (
         !values.productImage ||
         !values.title ||
@@ -63,31 +59,29 @@ function App() {
         !values.description
       ) {
 
-        setError("Please fill all fields");
+        setError("Please Fill All Fields");
 
         return;
       }
 
 
+      const productBody = {
+
+        title: values.title,
+        price: values.price,
+        description: values.description,
+        image: values.productImage
+
+      };
+
+
       try {
-
-        const productData = {
-
-          title: values.title,
-          price: values.price,
-          description: values.description,
-          image: values.productImage
-
-        };
-
-
-        // EDIT PRODUCT
 
         if (editId) {
 
           const apiRes = await axios.put(
-            `http://localhost:5000/edit-product/${editId}`,
-            productData
+            `http://localhost:5000/update-product/${editId}`,
+            productBody
           );
 
           if (apiRes.data.status === "error") {
@@ -97,20 +91,15 @@ function App() {
             return;
           }
 
-          setSuccess("Product Updated Successfully");
+          setSuccess(apiRes.data.message);
 
           setEditId(null);
 
-        }
-
-
-        // ADD PRODUCT
-
-        else {
+        } else {
 
           const apiRes = await axios.post(
-            "http://localhost:5000/add-product",
-            productData
+            "http://localhost:5000/create-product",
+            productBody
           );
 
           if (apiRes.data.status === "error") {
@@ -120,21 +109,19 @@ function App() {
             return;
           }
 
-          setSuccess("Product Added Successfully");
+          setSuccess(apiRes.data.message);
 
         }
 
 
         formik.resetForm();
-
         getAllProducts();
 
 
       } catch (error) {
 
         console.log("Error", error);
-
-        setError("Something went wrong");
+        setError("Something Went Wrong");
 
       }
 
@@ -143,15 +130,12 @@ function App() {
   });
 
 
-  // EDIT PRODUCT
-
   const editProduct = (product) => {
 
     setError("");
     setSuccess("");
 
     setEditId(product.id);
-
 
     formik.setValues({
 
@@ -165,8 +149,6 @@ function App() {
   };
 
 
-  // DELETE PRODUCT
-
   const deleteProduct = async (id) => {
 
     setError("");
@@ -175,9 +157,8 @@ function App() {
     try {
 
       const apiRes = await axios.delete(
-        `http://localhost:5000/delete-product/${id}`
+        `http://localhost:5000/remove-product/${id}`
       );
-
 
       if (apiRes.data.status === "error") {
 
@@ -186,29 +167,23 @@ function App() {
         return;
       }
 
-
-      setSuccess("Product Deleted Successfully");
+      setSuccess(apiRes.data.message);
 
       getAllProducts();
-
 
     } catch (error) {
 
       console.log("Delete Error", error);
-
-      setError("Product delete nahi hua");
+      setError("Product Delete Nahi Hua");
 
     }
 
   };
 
 
-  // CANCEL EDIT
-
   const cancelEdit = () => {
 
     setEditId(null);
-
     setError("");
     setSuccess("");
 
@@ -221,14 +196,10 @@ function App() {
 
     <div className="App">
 
-
       <h1>Product App</h1>
 
 
-      {/* FORM */}
-
       <form onSubmit={formik.handleSubmit}>
-
 
         <input
           type="url"
@@ -265,16 +236,12 @@ function App() {
         />
 
 
-        {/* ERROR */}
-
         {error && (
           <p className="error">
             {error}
           </p>
         )}
 
-
-        {/* SUCCESS */}
 
         {success && (
           <p className="success">
@@ -284,9 +251,7 @@ function App() {
 
 
         <button type="submit">
-
           {editId ? "Update Product" : "Add Product"}
-
         </button>
 
 
@@ -302,38 +267,25 @@ function App() {
 
         )}
 
-
       </form>
 
 
-      {/* PRODUCTS */}
-
       <div className="products">
-
 
         {allProducts.map((eachProduct) => (
 
-          <div
-            className="card"
-            key={eachProduct.id}
-          >
-
+          <div className="card" key={eachProduct.id}>
 
             <img
               src={eachProduct.image}
               alt={eachProduct.title}
             />
 
-
-            <h2>
-              {eachProduct.title}
-            </h2>
-
+            <h2>{eachProduct.title}</h2>
 
             <h3>
               Rs. {eachProduct.price}
             </h3>
-
 
             <p>
               {eachProduct.description}
@@ -353,19 +305,15 @@ function App() {
               Delete
             </button>
 
-
           </div>
 
         ))}
 
-
       </div>
-
 
     </div>
 
   );
-
 }
 
 export default App;

@@ -4,21 +4,31 @@ import cors from "cors";
 const app = express();
 const PORT = 5000;
 
-let products = [];
+let productData = [];
 
 app.use(cors());
 app.use(express.json());
 
 
-app.get("/get-all-products", (req, res) => {
-    res.send({
-        status: "success",
-        products
-    });
+
+app.get("/", (req, res) => {
+    res.send("Product Server is Running");
 });
 
 
-app.post("/add-product", (req, res) => {
+app.get("/get-products", (req, res) => {
+
+    res.send({
+        status: "success",
+        message: "Products Fetched Successfully",
+        products: productData
+    });
+
+});
+
+
+
+app.post("/create-product", (req, res) => {
 
     const productBody = req.body;
 
@@ -30,46 +40,55 @@ app.post("/add-product", (req, res) => {
     ) {
         res.send({
             status: "error",
-            message: "Required Parameter Missing"
+            message: "Please Enter All Product Details"
         });
+
         return;
     }
 
-    products.push({
+    const newProduct = {
         id: new Date().getTime(),
-        ...productBody
-    });
+        title: productBody.title,
+        price: productBody.price,
+        description: productBody.description,
+        image: productBody.image
+    };
+
+    productData.push(newProduct);
 
     res.send({
         status: "success",
-        message: "Product Add Successfully"
+        message: "New Product Added"
     });
+
 });
 
 
-app.put("/edit-product/:id", (req, res) => {
+app.put("/update-product/:id", (req, res) => {
 
     const productId = req.params.id;
 
-    let targetedProductId = null;
+    let productIndex = null;
 
-    for (let i = 0; i < products.length; i++) {
+    for (let i = 0; i < productData.length; i++) {
 
-        if (products[i].id == productId) {
-            targetedProductId = i;
+        if (productData[i].id == productId) {
+            productIndex = i;
+            break;
         }
 
     }
 
-    if (targetedProductId == null) {
+    if (productIndex == null) {
 
         res.send({
             status: "error",
-            message: `Product Not Found`
+            message: "Product Could Not Be Found"
         });
 
         return;
     }
+
 
     const productBody = req.body;
 
@@ -81,39 +100,59 @@ app.put("/edit-product/:id", (req, res) => {
     ) {
         res.send({
             status: "error",
-            message: "Required Parameter Missing"
+            message: "Please Complete All Product Fields"
         });
 
         return;
     }
 
-    products[targetedProductId].title = productBody.title;
-    products[targetedProductId].price = productBody.price;
-    products[targetedProductId].description = productBody.description;
-    products[targetedProductId].image = productBody.image;
+
+    productData[productIndex].title = productBody.title;
+    productData[productIndex].price = productBody.price;
+    productData[productIndex].description = productBody.description;
+    productData[productIndex].image = productBody.image;
+
 
     res.send({
         status: "success",
-        message: "Product Updated Successfully"
+        message: "Product Details Updated"
     });
+
 });
 
 
-app.delete("/delete-product/:id", (req, res) => {
+app.delete("/remove-product/:id", (req, res) => {
 
     const productId = req.params.id;
 
-    products = products.filter(
-        (eachProduct) => eachProduct.id != productId
+    const oldLength = productData.length;
+
+    productData = productData.filter(
+        (product) => product.id != productId
     );
+
+
+    if (oldLength === productData.length) {
+
+        res.send({
+            status: "error",
+            message: "Product Could Not Be Found"
+        });
+
+        return;
+    }
+
 
     res.send({
         status: "success",
-        message: "Product Deleted Successfully"
+        message: "Product Removed Successfully"
     });
+
 });
 
 
 app.listen(PORT, () => {
-    console.log(`App is Running On Port ${PORT}`);
+
+    console.log(`Product Server Started At Port ${PORT}`);
+
 });
