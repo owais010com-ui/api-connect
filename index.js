@@ -10,7 +10,6 @@ app.use(cors());
 app.use(express.json());
 
 
-
 app.get("/", (req, res) => {
     res.send("Product Server is Running");
 });
@@ -25,7 +24,6 @@ app.get("/get-products", (req, res) => {
     });
 
 });
-
 
 
 app.post("/create-product", (req, res) => {
@@ -89,7 +87,6 @@ app.put("/update-product/:id", (req, res) => {
         return;
     }
 
-
     const productBody = req.body;
 
     if (
@@ -106,12 +103,10 @@ app.put("/update-product/:id", (req, res) => {
         return;
     }
 
-
     productData[productIndex].title = productBody.title;
     productData[productIndex].price = productBody.price;
     productData[productIndex].description = productBody.description;
     productData[productIndex].image = productBody.image;
-
 
     res.send({
         status: "success",
@@ -131,7 +126,6 @@ app.delete("/remove-product/:id", (req, res) => {
         (product) => product.id != productId
     );
 
-
     if (oldLength === productData.length) {
 
         res.send({
@@ -142,7 +136,6 @@ app.delete("/remove-product/:id", (req, res) => {
         return;
     }
 
-
     res.send({
         status: "success",
         message: "Product Removed Successfully"
@@ -151,8 +144,4 @@ app.delete("/remove-product/:id", (req, res) => {
 });
 
 
-app.listen(PORT, () => {
-
-    console.log(`Product Server Started At Port ${PORT}`);
-
-});
+export default app;
