@@ -16,7 +16,7 @@ function App() {
     try {
 
       const apiRes = await axios.get(
-        "http://localhost:5000/get-products"
+        "https://api-connect-omega.vercel.app/get-products"
       );
 
       setAllProducts(apiRes.data.products);
@@ -66,12 +66,10 @@ function App() {
 
 
       const productBody = {
-
         title: values.title,
         price: values.price,
         description: values.description,
         image: values.productImage
-
       };
 
 
@@ -80,32 +78,27 @@ function App() {
         if (editId) {
 
           const apiRes = await axios.put(
-            `http://localhost:5000/update-product/${editId}`,
+            `https://api-connect-omega.vercel.app/update-product/${editId}`,
             productBody
           );
 
           if (apiRes.data.status === "error") {
-
             setError(apiRes.data.message);
-
             return;
           }
 
           setSuccess(apiRes.data.message);
-
           setEditId(null);
 
         } else {
 
           const apiRes = await axios.post(
-            "http://localhost:5000/create-product",
+            "https://api-connect-omega.vercel.app/create-product",
             productBody
           );
 
           if (apiRes.data.status === "error") {
-
             setError(apiRes.data.message);
-
             return;
           }
 
@@ -138,12 +131,10 @@ function App() {
     setEditId(product.id);
 
     formik.setValues({
-
       productImage: product.image,
       title: product.title,
       price: product.price,
       description: product.description
-
     });
 
   };
@@ -157,13 +148,11 @@ function App() {
     try {
 
       const apiRes = await axios.delete(
-        `http://localhost:5000/remove-product/${id}`
+        `https://api-connect-omega.vercel.app/remove-product/${id}`
       );
 
       if (apiRes.data.status === "error") {
-
         setError(apiRes.data.message);
-
         return;
       }
 
