@@ -10,8 +10,7 @@ function App() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
-  // const backendUrl = "https://express-api-blond.vercel.app";
-  const backendUrl = "http://localhost:5000";
+  const backendUrl = "https://api-connect-two.vercel.app";
 
   const getAllProducts = async () => {
 
