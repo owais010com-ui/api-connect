@@ -10,13 +10,15 @@ function App() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
+  // const backendUrl = "https://express-api-blond.vercel.app";
+  const backendUrl = "http://localhost:5000";
 
   const getAllProducts = async () => {
 
     try {
 
       const apiRes = await axios.get(
-        "https://api-connect-omega.vercel.app/get-products"
+        `${backendUrl}/get-products`
       );
 
       setAllProducts(apiRes.data.products);
@@ -78,14 +80,18 @@ function App() {
         if (editId) {
 
           const apiRes = await axios.put(
-            `https://api-connect-omega.vercel.app/update-product/${editId}`,
+            `${backendUrl}/update-product/${editId}`,
             productBody
           );
 
+
           if (apiRes.data.status === "error") {
+
             setError(apiRes.data.message);
+
             return;
           }
+
 
           setSuccess(apiRes.data.message);
           setEditId(null);
@@ -93,14 +99,18 @@ function App() {
         } else {
 
           const apiRes = await axios.post(
-            "https://api-connect-omega.vercel.app/create-product",
+            `${backendUrl}/create-product`,
             productBody
           );
 
+
           if (apiRes.data.status === "error") {
+
             setError(apiRes.data.message);
+
             return;
           }
+
 
           setSuccess(apiRes.data.message);
 
@@ -108,12 +118,14 @@ function App() {
 
 
         formik.resetForm();
+
         getAllProducts();
 
 
       } catch (error) {
 
         console.log("Error", error);
+
         setError("Something Went Wrong");
 
       }
@@ -145,24 +157,31 @@ function App() {
     setError("");
     setSuccess("");
 
+
     try {
 
       const apiRes = await axios.delete(
-        `https://api-connect-omega.vercel.app/remove-product/${id}`
+        `${backendUrl}/remove-product/${id}`
       );
 
+
       if (apiRes.data.status === "error") {
+
         setError(apiRes.data.message);
+
         return;
       }
+
 
       setSuccess(apiRes.data.message);
 
       getAllProducts();
 
+
     } catch (error) {
 
       console.log("Delete Error", error);
+
       setError("Product Delete Nahi Hua");
 
     }
@@ -173,6 +192,7 @@ function App() {
   const cancelEdit = () => {
 
     setEditId(null);
+
     setError("");
     setSuccess("");
 
@@ -270,7 +290,9 @@ function App() {
               alt={eachProduct.title}
             />
 
-            <h2>{eachProduct.title}</h2>
+            <h2>
+              {eachProduct.title}
+            </h2>
 
             <h3>
               Rs. {eachProduct.price}
@@ -303,6 +325,8 @@ function App() {
     </div>
 
   );
+
 }
+
 
 export default App;

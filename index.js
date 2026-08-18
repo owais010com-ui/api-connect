@@ -36,6 +36,7 @@ app.post("/create-product", (req, res) => {
         !productBody?.description ||
         !productBody?.image
     ) {
+
         res.send({
             status: "error",
             message: "Please Enter All Product Details"
@@ -43,6 +44,7 @@ app.post("/create-product", (req, res) => {
 
         return;
     }
+
 
     const newProduct = {
         id: new Date().getTime(),
@@ -52,7 +54,9 @@ app.post("/create-product", (req, res) => {
         image: productBody.image
     };
 
+
     productData.push(newProduct);
+
 
     res.send({
         status: "success",
@@ -68,6 +72,7 @@ app.put("/update-product/:id", (req, res) => {
 
     let productIndex = null;
 
+
     for (let i = 0; i < productData.length; i++) {
 
         if (productData[i].id == productId) {
@@ -76,6 +81,7 @@ app.put("/update-product/:id", (req, res) => {
         }
 
     }
+
 
     if (productIndex == null) {
 
@@ -87,7 +93,9 @@ app.put("/update-product/:id", (req, res) => {
         return;
     }
 
+
     const productBody = req.body;
+
 
     if (
         !productBody?.title ||
@@ -95,6 +103,7 @@ app.put("/update-product/:id", (req, res) => {
         !productBody?.description ||
         !productBody?.image
     ) {
+
         res.send({
             status: "error",
             message: "Please Complete All Product Fields"
@@ -103,10 +112,12 @@ app.put("/update-product/:id", (req, res) => {
         return;
     }
 
+
     productData[productIndex].title = productBody.title;
     productData[productIndex].price = productBody.price;
     productData[productIndex].description = productBody.description;
     productData[productIndex].image = productBody.image;
+
 
     res.send({
         status: "success",
@@ -122,9 +133,11 @@ app.delete("/remove-product/:id", (req, res) => {
 
     const oldLength = productData.length;
 
+
     productData = productData.filter(
         (product) => product.id != productId
     );
+
 
     if (oldLength === productData.length) {
 
@@ -136,6 +149,7 @@ app.delete("/remove-product/:id", (req, res) => {
         return;
     }
 
+
     res.send({
         status: "success",
         message: "Product Removed Successfully"
@@ -143,5 +157,8 @@ app.delete("/remove-product/:id", (req, res) => {
 
 });
 
+app.listen(PORT, () => {
+    console.log(`Product Server Started At Port ${PORT}`);
+});
 
 export default app;
